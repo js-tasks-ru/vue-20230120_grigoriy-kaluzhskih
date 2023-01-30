@@ -1,4 +1,4 @@
-// import { createApp } from './vendor/vue.esm-browser.js';
+import { createApp, defineComponent } from './vendor/vue.esm-browser.js';
 
 // From https://jsonplaceholder.typicode.com/comments
 const emails = [
@@ -29,4 +29,23 @@ const emails = [
   'Isaias_Kuhic@jarrett.net',
 ];
 
-// Требуется создать Vue приложение
+// Создайте Vue приложение
+const CompOptions = {
+  name: 'Lesson01-basics',
+  data() {
+    return {
+      emails,
+      searchText: "",
+    };
+  },
+  computed: {
+    filteredEmails() {
+      return this.emails.filter( (item) => item.toLowerCase().includes(this.searchText.toLowerCase()));
+    },
+  },
+};
+const Component = defineComponent(CompOptions);
+
+const vm = createApp(Component).mount('#app');
+window.vm = vm;
+
