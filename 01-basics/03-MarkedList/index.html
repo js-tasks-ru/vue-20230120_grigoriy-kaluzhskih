@@ -17,7 +17,7 @@
           <input type="search" v-model="searchText"  />
         </div>
         <ul>
-          <li v-for="item in emails" :class="{marked: searchText != '' && filteredEmails.includes(item)}" >{{item}} </li>
+          <li v-for="item in filteredEmails" :class="{marked: searchText && item.marked}" >{{item}} </li>
         </ul>
       </div>
     </div>

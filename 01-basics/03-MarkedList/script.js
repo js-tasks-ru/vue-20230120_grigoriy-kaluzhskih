@@ -35,12 +35,12 @@ const CompOptions = {
   data() {
     return {
       emails,
-      searchText: "",
+      searchText: '',
     };
   },
   computed: {
     filteredEmails() {
-      return this.emails.filter( (item) => item.toLowerCase().includes(this.searchText.toLowerCase()));
+      return this.emails.map((email) => ({ email, marked: email.toLowerCase().indexOf(this.searchText.toLowerCase()) !== -1 }));
     },
   },
 };
