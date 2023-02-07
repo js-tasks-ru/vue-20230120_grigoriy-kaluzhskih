@@ -50,11 +50,6 @@ export default {
     inactiveDay(date) {
       return date < this.firstDayOfMonth || date > this.lastDayOfMonth ? true : false;
     },
-    isEqualDate(dateMeetup, dateCalendar) {
-      return (new Date(dateMeetup).getYear() === dateCalendar.getYear() &&
-        new Date(dateMeetup).getMonth() === dateCalendar.getMonth() &&
-        new Date(dateMeetup).getDate() === dateCalendar.getDate());
-    },
   },
   computed: {
     firstDayOfMonth() {
