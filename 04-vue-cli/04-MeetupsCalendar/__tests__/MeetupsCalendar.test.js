@@ -41,6 +41,7 @@ function testMonthTitle(title, _date) {
 }
 
 function testMonthCalendar(wrapper, expectedDate, daysBefore, daysIn, daysAfter) {
+  
   const cells = wrapper.findAll(SELECTOR_CELL);
   testDaysCount(cells, daysBefore, daysIn, daysAfter);
   testCellsInactive(cells, daysBefore, daysIn, daysAfter);
@@ -171,3 +172,4 @@ describe('vue-cli/MeetupsCalendar', () => {
     });
   });
 });
+ 
