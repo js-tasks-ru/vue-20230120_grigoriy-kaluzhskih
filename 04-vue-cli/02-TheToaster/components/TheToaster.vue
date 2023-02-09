@@ -1,11 +1,11 @@
 <template>
     <div class="toasts">
-      <Toast v-for="toast in toasters" :toast="toast" />
+      <ToastElement v-for="toast in toasters" :toast="toast" />
     </div>
 </template>
 
 <script>
-import Toast from './Toast.vue';
+import ToastElement from './ToastElement.vue';
 
 export default {
   
@@ -20,29 +20,28 @@ export default {
       toasters: [],
     }
   },
-  components: { Toast },
+  components: { ToastElement },
 
   methods: {
     success(message) {
       this.toasters.push({
-        text:message,
-        toastClass:"toast_success",
-        iconName:"check-circle",
+        text: message,
+        type: "success"
       });
       this.setFade();
     },
     error(message) {
       this.toasters.push({
-        text:message,
-        toastClass:"toast_error",
-        iconName:"alert-circle",
+        text: message,
+        type: "error"
       });
       this.setFade();
     },
     setFade() {    
-      setTimeout(function () {
-        this.toasters.splice(0, 1);
-      }.bind(this), this.lifetime);
+      setTimeout(
+        () => this.toasters.splice(0, 1)
+        , this.lifetime
+      );
     },
   },
 };

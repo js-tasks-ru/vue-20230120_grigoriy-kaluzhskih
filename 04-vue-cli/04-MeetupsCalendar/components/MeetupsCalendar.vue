@@ -21,6 +21,7 @@
 </template>
 
 <script>
+const millisec = (1000 * 60 * 60 * 24);
 export default {
   name: 'MeetupsCalendar',
   data() {
@@ -53,20 +54,20 @@ export default {
   },
   computed: {
     firstDayOfMonth() {
-      return new Date(this.date.getFullYear(), this.date.getMonth(), 1); //.getDay()
+      return new Date(Date.UTC(this.date.getFullYear(), this.date.getMonth(), 1)); //.getDay()
     },
     lastDayOfMonth() {
-      return new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0); //.getDay()
+      return new Date(Date.UTC(this.date.getFullYear(), this.date.getMonth() + 1, 0)); //.getDay()
     },
     firstDayOfCalendar() {
-      return new Date(this.date.getFullYear(), this.date.getMonth(), -this.firstDayOfMonth.getUTCDay() + 1);
+      return new Date(this.firstDayOfMonth.getTime() + (-((this.firstDayOfMonth.getDay() || 7 ) - 1) * millisec));
     },
     lastDayOfCalendar() {
-      return new Date(this.date.getFullYear(), this.date.getMonth() + 1, -this.lastDayOfMonth.getUTCDay() + 6);
+      return new Date(this.lastDayOfMonth.getTime() + (  (7 - (this.lastDayOfMonth.getDay() || 7 ))  * millisec))
     },
     daysCalendar() {
       let daysOfYear = [];
-      for (let d = new Date(this.firstDayOfCalendar); d <= this.lastDayOfCalendar; d.setDate(d.getDate() + 1)) {
+      for (let d = this.firstDayOfCalendar; d <= this.lastDayOfCalendar; d = new Date(d.getTime() + 1 * millisec)) {
         let meetupOnDay = this.meetups.filter((meetup) => {
           let meetupDate = new Date(meetup.date);
           return (

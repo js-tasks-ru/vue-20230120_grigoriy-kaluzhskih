@@ -6,7 +6,7 @@
     </button>
 
     <div v-show="visible" class="dropdown__menu" role="listbox">
-      <button @click="updateModel(option.value); updateVisible()" v-for="option in options" class="dropdown__item" :class="{'dropdown__item_icon': iconExist}"  role="option" type="button">
+      <button @click="updateModel(option.value)" v-for="option in options" class="dropdown__item" :class="{'dropdown__item_icon': iconExist}"  role="option" type="button">
         <ui-icon :icon="option.icon" class="dropdown__icon" />
         {{ option.text }}
       </button>
@@ -28,7 +28,7 @@ export default {
       type: String,
       required: true,
     },
-    selectedType: {
+    modelValue: {
       type: String,
     },
   },
@@ -44,6 +44,7 @@ export default {
     },
     updateModel(value) {
       this.$emit('update:modelValue', value);
+      this.updateVisible();
     },
   },
   emits: ['update:model-value'],
@@ -52,10 +53,10 @@ export default {
       return this.options.find(item => item.icon) ? true : false;
     },
     selectedTitle() {
-      return this.$attrs.modelValue ? this.options.find(item => item.value === this.$attrs.modelValue).text : this.title;
+      return this.modelValue ? this.options.find(item => item.value === this.modelValue).text : this.title;
     },
     selectedIcon() {
-      return this.$attrs.modelValue ? this.options.find(item => item.value === this.$attrs.modelValue).icon : '';
+      return this.modelValue ? this.options.find(item => item.value === this.modelValue).icon : '';
     },
   },
 };
