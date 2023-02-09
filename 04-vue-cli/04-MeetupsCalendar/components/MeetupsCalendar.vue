@@ -3,9 +3,9 @@
 
     <div class="calendar-view__controls">
       <div class="calendar-view__controls-inner">
-        <button @click="getPrevMonth" class="calendar-view__control-left" type="button" aria-label="Previous month"> </button>
+        <button @click="getMonth(-1)" class="calendar-view__control-left" type="button" aria-label="Previous month"> </button>
         <div class="calendar-view__date">{{ toLocaleDateString(date) }}</div>
-        <button @click="getNextMonth" class="calendar-view__control-right" type="button" aria-label="Next month"></button>
+        <button @click="getMonth(1)" class="calendar-view__control-right" type="button" aria-label="Next month"></button>
       </div>
     </div>
 
@@ -42,11 +42,8 @@ export default {
         year: 'numeric',
       });
     },
-    getPrevMonth() {
-      this.date = new Date(this.date.setMonth(this.date.getMonth() - 1));
-    },
-    getNextMonth() {
-      this.date = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 1);
+    getMonth(value) {
+      this.date = new Date(this.date.getFullYear(), this.date.getMonth() + value, 1);
     },
     inactiveDay(date) {
       return date < this.firstDayOfMonth || date > this.lastDayOfMonth ? true : false;
