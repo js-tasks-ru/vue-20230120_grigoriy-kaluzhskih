@@ -1,15 +1,111 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label 
+      class="image-uploader__preview"
+      :class="{ 'image-uploader__preview-loading': state.stateName === $options.States.LOADING.stateName }"
+      :style="state.stateName !== $options.States.EMPTY.stateName && `--bg-url: url('${imageSrc}')`"
+    >
+      <span class="image-uploader__text">{{ state.stateText }}</span>
+      <input 
+        ref="input"
+        type="file" 
+        accept="image/*" 
+        class="image-uploader__input" 
+        v-bind="$attrs" 
+        @change="handleFileSelect"
+        @click="handleClick"
+      />
     </label>
   </div>
 </template>
 
 <script>
+const States = {
+  EMPTY: {
+    stateName: "EMPTY",
+    stateText: "Загрузить изображение"
+  },
+  LOADING: {
+    stateName: "LOADING",
+    stateText: "Загрузка..."
+  },
+  FILLED: {
+    stateName: "FILLED",
+    stateText: "Удалить изображение"
+  }
+}
 export default {
   name: 'UiImageUploader',
+
+  inheritAttrs: false,
+
+  props: {
+    preview: String,
+    uploader: Function,
+  },
+
+  States,
+
+  data() {
+    return {
+      state: this.preview ? States.FILLED : States.EMPTY,
+      localPreview: undefined,
+    };
+  },
+
+  beforeUnmount() {
+    if (this.preview) {
+      URL.revokeObjectURL(this.localPreview);
+    }
+  },
+
+  emits: ['select', 'upload', 'error', 'remove'],
+
+  computed: {
+    imageSrc() {
+      return this.localPreview ?? this.preview;
+    },
+  },
+
+  methods: {
+    async handleFileSelect($event) {
+      const file = $event.target.files[0];
+      this.$emit('select', file);
+      this.localPreview = URL.createObjectURL(file);
+      if (!this.uploader) {
+        this.state = States.FILLED;
+        return;
+      }
+      return await this.upload(file);
+    },
+
+    async upload(file) {
+      this.state = States.LOADING;
+      try {
+        const result = await this.uploader(file);
+        this.$emit('upload', result);
+        this.state = States.FILLED;
+      } catch (error) {
+        this.$emit('error', error);
+        this.state = States.EMPTY;
+        this.removeFile();
+      }
+    },
+    handleClick($event) {
+      if (this.state.stateName === States.LOADING.stateName) {
+        $event.preventDefault();
+      } else if (this.state.stateName === States.FILLED.stateName) {
+        $event.preventDefault();
+        this.removeFile();
+        this.state = States.EMPTY;
+        this.$emit('remove');
+      }
+    },
+    removeFile() {
+      this.$refs.input.value = '';
+      this.localPreview = null;
+    },
+  },
 };
 </script>
 
